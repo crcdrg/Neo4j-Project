@@ -1,0 +1,15 @@
+//Loading the Data
+
+load csv with headers from "file:///EPL_dataset_for_2018_19_assignment(2).csv"
+as row
+create (m:Match{round:toInteger(row.Round), Date:row.Date, fulltime:row.FT, halftime:row.HT})
+merge (t1:Team{name:row.Team1})-[ph:Played_Home{fulltime:toInteger(substring(row.FT,0,1)),
+halftime:toInteger(substring(row.HT,0,1))}]->(m)<-
+[pa:Played_Away{fulltime:toInteger(substring(row.FT,2,3)),
+halftime:toInteger(substring(row.HT,2,3))}]-(t2:Team{name:row.Team2})
+
+set ph.result = CASE ph.fulltime > pa.fulltime WHEN true then 'won' else 'lost' END
+set ph.result = CASE ph.fulltime = pa.fulltime when true then 'draw' else ph.result END
+set pa.result = CASE pa.fulltime > ph.fulltime WHEN true then 'won' else 'lost' END
+set pa.result = CASE pa.fulltime = ph.fulltime when true then 'draw' else pa.result end
+
