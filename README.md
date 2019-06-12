@@ -14,3 +14,6 @@ The list of queries for the assignment
 8)	Display top five teams with best half time result.
 9)	Which teams had the most “loss”?
 10)	display the team with the most consecutive “win”.
+
+
+In order to load the csv file, it needs to be copied into the folder "import".
