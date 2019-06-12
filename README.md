@@ -1,5 +1,5 @@
 # Neo4j-Project
-The assignment required to retrieve data from a given CSV file that included English Premier League 2017-2018
+The assignment required to create a graph database and visualize the dataset from a given CSV file that included English Premier League 2017-2018 matches.
 
 
 The list of queries for the assignment
