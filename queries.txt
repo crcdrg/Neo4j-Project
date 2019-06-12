@@ -1,0 +1,87 @@
+//Cypher Queries
+
+//Query 1 - Displays all the matches played
+
+match (n:Match)
+return n, count(*)
+
+//Query 2 - Displays all information about Manchester United
+
+match (n:Team{name:'Manchester United FC'})-[a]->(g:Match)<-[b]-(t2:Team)
+return n, a, g, b,t2
+
+//Query 3 - Displays all the teams that played the EPL matches in the season.
+
+match (n:Team) return distinct n.name
+
+//Query 4 - Displays the team with most wins in January (Limit is not necessary because it displays more than one)
+
+match (t:Team)-[r]->(m:Match)<-[x]-()
+where m.Date contains 'Jan' and r.result = 'won'
+return t.name, count(r.result) as total
+order by total desc
+limit 5
+
+//Query 5 - Display best scoring power
+
+Match (t:Team)-[r]-(m:Match)
+return t.name ,sum(r.fulltime)
+order by sum(r.fulltime) desc
+limit 5
+
+//Query 6 - Display teams with the worst defending
+
+match (t:Team)-[r]->(m:Match)<-[x]-()
+return t.name ,sum(x.fulltime)
+order by sum(x.fulltime) desc
+limit 5
+
+//Query 7 - Top 5 teams with best winning record
+
+match (t1:Team)-[r1{result:'won'}]->(m1:Match)
+WITH t1.name as Team1, COUNT(r1.result) * 3 as wins
+WITH COLLECT([Team1, wins]) as coll
+match (t2:Team)-[r2{result:'draw'}]->(m2:Match)
+WITH coll as list1, t2.name as Team2, COUNT(r2.result) as draws
+WITH list1, COLLECT([Team2, draws]) as coll2
+WITH (list1 + coll2) as results
+unwind results as a
+return distinct a[0] as `Team Name`, SUM(a[1]) as Points order by sum(a[1]) desc limit 5
+
+//Query 8 - Displays top 5 teams with best halftime results
+
+match (t1:Team)-[r1]->(m1:Match)
+WITH t1.name as Team1, sum(r1.halftime) as wins
+WITH COLLECT([Team1, wins]) as coll
+match (t2:Team)-[r2]->(m2:Match)
+WITH coll as list1, t2.name as Team2, sum(r2.halftime) as draws
+WITH list1, COLLECT([Team2, draws]) as coll2
+WITH (list1 + coll2) as results
+unwind results as a
+return distinct a[0] as `Team Name`, a[1] as Points order by a[1] desc limit 5
+
+//Query 9 - Display the team with the most loses
+
+match (t:Team)-[r]->(m:Match)<-[x]-()
+where r.result = 'lost'
+return t.name, count(r.result) as total
+order by total desc
+limit 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
